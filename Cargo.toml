@@ -2,6 +2,9 @@
 name = "simple_color_log"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+description = "A simple color log library for Rust"
+readme = "README.md"
 
 [features]
 default = ["info"]
