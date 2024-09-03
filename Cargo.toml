@@ -1,0 +1,15 @@
+[package]
+name = "simple_color_log"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["info"]
+error = []
+warn = ["error"]
+info = ["warn"]
+debug = ["info"]
+trace = ["debug"]
+
+[dependencies]
+time = { version = "0", features = ["std", "formatting"] }
