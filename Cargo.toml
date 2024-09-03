@@ -5,6 +5,7 @@ edition = "2021"
 license = "MIT"
 description = "A simple color log library for Rust"
 readme = "README.md"
+repository = "https://github.com/goldensansapple/simple_color_log"
 
 [features]
 default = ["info"]
