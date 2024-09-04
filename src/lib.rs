@@ -11,7 +11,11 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 /// Log fatal then exit
 #[macro_export]
 macro_rules! log_fatal {
-    ($msg:expr) => {
+    ($msg:expr) => {{
+        use std::panic::panic_any;
+        use time::format_description;
+        use time::OffsetDateTime;
+
         let format = format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
             .unwrap_or_default();
 
@@ -26,135 +30,178 @@ macro_rules! log_fatal {
             $msg
         );
 
-        panic!($msg);
-    };
+        panic_any($msg);
+    }};
 }
 
 /// Log error
+#[cfg(feature = "error")]
 #[macro_export]
 macro_rules! log_error {
-    ($msg:expr) => {
+    ($msg:expr) => {{
         use time::format_description;
         use time::OffsetDateTime;
 
-        #[cfg(feature = "error")]
-        {
-            let format = format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
-                .unwrap_or_default();
+        let format = format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
+            .unwrap_or_default();
 
-            eprintln!(
-                "{} {}:{}:{}: {}",
-                "\x1b[0;34m[\x1b[0;31mE\x1b[0;34m]\x1b[0m",
-                file!().split("\\").last().unwrap_or(""),
-                line!(),
-                OffsetDateTime::now_utc()
-                    .format(&format)
-                    .unwrap_or_default(),
-                $msg
-            );
-        }
-    };
+        eprintln!(
+            "{} {}:{}:{}: {}",
+            "\x1b[0;34m[\x1b[0;31mE\x1b[0;34m]\x1b[0m",
+            file!().split("\\").last().unwrap_or(""),
+            line!(),
+            OffsetDateTime::now_utc()
+                .format(&format)
+                .unwrap_or_default(),
+            $msg
+        );
+    }};
+}
+
+/// Log error
+#[cfg(not(feature = "error"))]
+#[macro_export]
+macro_rules! log_error {
+    ($msg:expr) => {};
 }
 
 /// Log warning
+#[cfg(feature = "warn")]
 #[macro_export]
 macro_rules! log_warn {
-    ($msg:expr) => {
-        #[cfg(feature = "warn")]
-        {
-            let format = format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
-                .unwrap_or_default();
+    ($msg:expr) => {{
+        use time::format_description;
+        use time::OffsetDateTime;
 
-            eprintln!(
-                "{} {}:{}:{}: {}",
-                "\x1b[0;34m[\x1b[0;33mW\x1b[0;34m]\x1b[0m",
-                file!().split("\\").last().unwrap_or(""),
-                line!(),
-                OffsetDateTime::now_utc()
-                    .format(&format)
-                    .unwrap_or_default(),
-                $msg
-            );
-        }
-    };
+        let format = format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
+            .unwrap_or_default();
+
+        eprintln!(
+            "{} {}:{}:{}: {}",
+            "\x1b[0;34m[\x1b[0;33mW\x1b[0;34m]\x1b[0m",
+            file!().split("\\").last().unwrap_or(""),
+            line!(),
+            OffsetDateTime::now_utc()
+                .format(&format)
+                .unwrap_or_default(),
+            $msg
+        );
+    }};
+}
+
+/// Log warning
+#[cfg(not(feature = "warn"))]
+#[macro_export]
+macro_rules! log_warn {
+    ($msg:expr) => {};
 }
 
 /// Log info
+#[cfg(feature = "info")]
 #[macro_export]
 macro_rules! log_info {
-    ($msg:expr) => {
-        #[cfg(feature = "info")]
-        {
-            let format = format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
-                .unwrap_or_default();
+    ($msg:expr) => {{
+        use time::format_description;
+        use time::OffsetDateTime;
 
-            println!(
-                "{} {}:{}:{}: {}",
-                "\x1b[0;34m[\x1b[0;32mI\x1b[0;34m]\x1b[0m",
-                file!().split("\\").last().unwrap_or(""),
-                line!(),
-                OffsetDateTime::now_utc()
-                    .format(&format)
-                    .unwrap_or_default(),
-                $msg
-            );
-        }
-    };
+        let format = format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
+            .unwrap_or_default();
+
+        println!(
+            "{} {}:{}:{}: {}",
+            "\x1b[0;34m[\x1b[0;32mI\x1b[0;34m]\x1b[0m",
+            file!().split("\\").last().unwrap_or(""),
+            line!(),
+            OffsetDateTime::now_utc()
+                .format(&format)
+                .unwrap_or_default(),
+            $msg
+        );
+    }};
+}
+
+/// Log info
+#[cfg(not(feature = "info"))]
+#[macro_export]
+macro_rules! log_info {
+    ($msg:expr) => {};
 }
 
 /// Log debug
+#[cfg(feature = "debug")]
 #[macro_export]
 macro_rules! log_debug {
-    ($msg:expr) => {
-        #[cfg(feature = "debug")]
-        {
-            let format = format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
-                .unwrap_or_default();
+    ($msg:expr) => {{
+        use time::format_description;
+        use time::OffsetDateTime;
 
-            println!(
-                "{} {}:{}:{}: {}",
-                "\x1b[0;34m[\x1b[0;36mD\x1b[0;34m]\x1b[0m",
-                file!().split("\\").last().unwrap_or(""),
-                line!(),
-                OffsetDateTime::now_utc()
-                    .format(&format)
-                    .unwrap_or_default(),
-                $msg
-            );
-        }
-    };
+        let format = format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
+            .unwrap_or_default();
+
+        println!(
+            "{} {}:{}:{}: {}",
+            "\x1b[0;34m[\x1b[0;36mD\x1b[0;34m]\x1b[0m",
+            file!().split("\\").last().unwrap_or(""),
+            line!(),
+            OffsetDateTime::now_utc()
+                .format(&format)
+                .unwrap_or_default(),
+            $msg
+        );
+    }};
+}
+
+/// Log debug
+#[cfg(not(feature = "debug"))]
+#[macro_export]
+macro_rules! log_debug {
+    ($msg:expr) => {};
 }
 
 /// Log trace
+#[cfg(feature = "trace")]
 #[macro_export]
 macro_rules! log_trace {
-    ($msg:expr) => {
-        #[cfg(feature = "trace")]
-        {
-            let format = format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
-                .unwrap_or_default();
+    ($msg:expr) => {{
+        use time::format_description;
+        use time::OffsetDateTime;
 
-            println!(
-                "{} {}:{}:{}: {}",
-                "\x1b[0;34m[\x1b[1;37mT\x1b[0;34m]\x1b[0m",
-                file!().split("\\").last().unwrap_or(""),
-                line!(),
-                OffsetDateTime::now_utc()
-                    .format(&format)
-                    .unwrap_or_default(),
-                $msg
-            );
-        }
-    };
+        let format = format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
+            .unwrap_or_default();
+
+        println!(
+            "{} {}:{}:{}: {}",
+            "\x1b[0;34m[\x1b[1;37mT\x1b[0;34m]\x1b[0m",
+            file!().split("\\").last().unwrap_or(""),
+            line!(),
+            OffsetDateTime::now_utc()
+                .format(&format)
+                .unwrap_or_default(),
+            $msg
+        );
+    }};
+}
+
+/// Log trace
+#[cfg(not(feature = "trace"))]
+#[macro_export]
+macro_rules! log_trace {
+    ($msg:expr) => {};
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::log_debug;
+    use super::log_error;
+    #[allow(unused_imports)]
+    use super::log_fatal;
+    use super::log_info;
+    use super::log_trace;
+    use super::log_warn;
 
     #[test]
     fn test() {
-        // log_fatal!("fatal");
+        //  log_fatal!(format!("fatal {}", "error"));
         log_error!("error");
         log_warn!("warn");
         log_info!("info");
